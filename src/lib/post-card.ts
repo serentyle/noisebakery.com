@@ -6,6 +6,18 @@ export type PostCard = {
   readonly tags: readonly string[];
 };
 
+export function tagListHref(tag: string): string {
+  return `/blog/?tag=${encodeURIComponent(tag)}`;
+}
+
+export function selectedTagsFromSearch(search: string): string[] {
+  const tags: string[] = [];
+  for (const tag of new URLSearchParams(search).getAll('tag')) {
+    if (tag.length > 0 && !tags.includes(tag)) tags.push(tag);
+  }
+  return tags;
+}
+
 export function formatPostDate(iso: string): string {
   return new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'long',

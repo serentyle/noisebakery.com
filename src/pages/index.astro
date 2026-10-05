@@ -1,5 +1,5 @@
 ---
-import { Badge } from '@/components/ui/badge';
+import { TagLink } from '@/components/blog/TagLink';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts, postPath } from '../lib/blog';
@@ -39,7 +39,7 @@ const posts = (await getPublishedPosts()).slice(0, 5);
                         <ul class="flex flex-wrap gap-2">
                           {post.data.tags.map((tag) => (
                             <li>
-                              <Badge variant="secondary">{tag}</Badge>
+                              <TagLink tag={tag} />
                             </li>
                           ))}
                         </ul>

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { Badge } from '@/components/ui/badge';
+import { TagLink } from '@/components/blog/TagLink';
 import BaseLayout from './BaseLayout.astro';
 import { formatPostDate } from '@/lib/post-card';
 import type { PublishedPost } from '@/lib/blog';
@@ -23,7 +23,7 @@ const { title, description, pubDate, tags, heroImage } = entry.data;
           <ul class="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <li>
-                <Badge variant="secondary">{tag}</Badge>
+                <TagLink tag={tag} />
               </li>
             ))}
           </ul>

@@ -1,15 +1,38 @@
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { formatPostDate, type PostCard } from '@/lib/post-card';
+import { TagLink } from '@/components/blog/TagLink';
+import { formatPostDate, selectedTagsFromSearch, type PostCard } from '@/lib/post-card';
 
 type Props = {
   posts: readonly PostCard[];
 };
 
+function initialSelected(): string[] {
+  if (typeof window === 'undefined') return [];
+  return selectedTagsFromSearch(window.location.search);
+}
+
+function sameTags(a: readonly string[], b: readonly string[]): boolean {
+  return a.length === b.length && a.every((tag, index) => tag === b[index]);
+}
+
 export function TagFilter({ posts }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(initialSelected);
+
+  useLayoutEffect(() => {
+    const next = initialSelected();
+    setSelected((current) => (sameTags(current, next) ? current : next));
+  }, []);
+
+  useEffect(() => {
+    const sync = () => {
+      const next = initialSelected();
+      setSelected((current) => (sameTags(current, next) ? current : next));
+    };
+    document.addEventListener('astro:page-load', sync);
+    return () => document.removeEventListener('astro:page-load', sync);
+  }, []);
   const tags: string[] = [];
   for (const post of posts) {
     for (const tag of post.tags) {
@@ -55,7 +78,7 @@ export function TagFilter({ posts }: Props) {
                   <ul className="flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
                       <li key={tag}>
-                        <Badge variant="secondary">{tag}</Badge>
+                        <TagLink tag={tag} />
                       </li>
                     ))}
                   </ul>

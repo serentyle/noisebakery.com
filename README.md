@@ -2,24 +2,24 @@
 
 ## Develop
 
-Use Node.js 22.
+Use Node.js 22 and pnpm. `package.json` sets `packageManager` to pnpm.
 
 Start the local site.
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Check types.
 
 ```bash
-npx astro check
+pnpm check
 ```
 
 Build the static site. The build writes files to `dist`.
 
 ```bash
-npm run build
+pnpm build
 ```
 
-Cloudflare Pages uses the build command `npm run build`, the output directory `dist`, and Node.js 22.
+Cloudflare Pages uses the build command `pnpm build`, the output directory `dist`, and Node.js 22.

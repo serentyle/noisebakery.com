@@ -1,0 +1,58 @@
+---
+import { TagLink } from '@/components/blog/TagLink';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, postPath } from '../lib/blog';
+import { formatPostDate } from '../lib/post-card';
+import { siteName } from '../lib/site';
+
+const posts = (await getPublishedPosts()).slice(0, 5);
+---
+
+<BaseLayout>
+  <div class="flex flex-col gap-6">
+    <h1 class="text-3xl font-medium">{siteName}</h1>
+    <section class="flex flex-col gap-4">
+      <h2 class="text-xl font-medium">最新の記事</h2>
+      {
+        posts.length === 0 ? (
+          <p>まだ記事がありません。</p>
+        ) : (
+          <ul class="flex flex-col gap-4">
+            {posts.map((post) => (
+              <li>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>
+                      <a href={postPath(post.id)}>{post.data.title}</a>
+                    </CardTitle>
+                    <CardDescription>
+                      <time datetime={post.data.pubDate.toISOString()}>
+                        {formatPostDate(post.data.pubDate.toISOString())}
+                      </time>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-3">
+                    <p>{post.data.description}</p>
+                    {
+                      post.data.tags.length > 0 && (
+                        <ul class="flex flex-wrap gap-2">
+                          {post.data.tags.map((tag) => (
+                            <li>
+                              <TagLink tag={tag} />
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                    }
+                  </CardContent>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </section>
+    <a href="/blog/">すべての記事</a>
+  </div>
+</BaseLayout>

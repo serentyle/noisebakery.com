@@ -1,93 +1,91 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { TagLink } from '@/components/blog/TagLink';
-import { formatPostDate, selectedTagsFromSearch, type PostCard } from '@/lib/post-card';
+import { useLayoutEffect, useState } from 'react';
+import { RuleFigure } from '../RuleFigure';
+import {
+  selectedTagsFromSearch,
+  tagListHref,
+  tagsInFirstSeenOrder,
+  visiblePosts,
+  type PostSummary,
+} from '../../lib/posts';
 
 type Props = {
-  posts: readonly PostCard[];
+  posts: readonly PostSummary[];
 };
-
-function initialSelected(): string[] {
-  if (typeof window === 'undefined') return [];
-  return selectedTagsFromSearch(window.location.search);
-}
 
 function sameTags(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((tag, index) => tag === b[index]);
 }
 
 export function TagFilter({ posts }: Props) {
-  const [selected, setSelected] = useState<string[]>(initialSelected);
+  const [selected, setSelected] = useState<string[]>([]);
 
   useLayoutEffect(() => {
-    const next = initialSelected();
-    setSelected((current) => (sameTags(current, next) ? current : next));
-  }, []);
-
-  useEffect(() => {
     const sync = () => {
-      const next = initialSelected();
+      const next = selectedTagsFromSearch(window.location.search);
       setSelected((current) => (sameTags(current, next) ? current : next));
     };
+    sync();
     document.addEventListener('astro:page-load', sync);
     return () => document.removeEventListener('astro:page-load', sync);
   }, []);
-  const tags: string[] = [];
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      if (!tags.includes(tag)) tags.push(tag);
-    }
+
+  const tags = tagsInFirstSeenOrder(posts);
+  const visible = visiblePosts(posts, selected);
+
+  function toggleTag(tag: string) {
+    setSelected((current) =>
+      current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag],
+    );
   }
-  const visible =
-    selected.length === 0
-      ? posts
-      : posts.filter((post) => post.tags.some((tag) => selected.includes(tag)));
 
   return (
-    <div className="flex flex-col gap-6">
-      <ToggleGroup
-        multiple
-        value={selected}
-        onValueChange={setSelected}
-        aria-label="タグで絞り込む"
-      >
-        {tags.map((tag) => (
-          <ToggleGroupItem key={tag} value={tag}>
-            {tag}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-      {visible.length === 0 ? (
-        <p>該当する記事はありません。</p>
-      ) : (
-        <ul className="flex flex-col gap-4">
-          {visible.map((post) => (
-            <li key={post.url}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    <a href={post.url}>{post.title}</a>
-                  </CardTitle>
-                  <CardDescription>
-                    <time dateTime={post.pubDate}>{formatPostDate(post.pubDate)}</time>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <p>{post.description}</p>
-                  <ul className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <li key={tag}>
-                        <TagLink tag={tag} />
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </li>
+    <>
+      <section className="blog-head">
+        <h1>記事</h1>
+        <div className="pills" role="group" aria-label="タグで絞り込む">
+          <button
+            type="button"
+            className="pill"
+            aria-pressed={selected.length === 0}
+            onClick={() => setSelected((current) => (current.length === 0 ? current : []))}
+          >
+            すべて
+          </button>
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              className="pill"
+              aria-pressed={selected.includes(tag)}
+              onClick={() => toggleTag(tag)}
+            >
+              {`#${tag}`}
+            </button>
           ))}
-        </ul>
-      )}
-    </div>
+        </div>
+      </section>
+      <RuleFigure kind="ruler" />
+      <section className="blog-list">
+        {visible.length === 0 ? (
+          <p>該当する記事はありません。</p>
+        ) : (
+          visible.map((post) => (
+            <div key={post.url} className="row">
+              <a className="fg" href={post.url}>
+                {post.title}
+              </a>
+              <div className="byline">
+                <time dateTime={post.iso}>{post.date}</time>
+                {post.tags.map((tag) => (
+                  <a key={tag} className="tag" href={tagListHref(tag)}>
+                    {`#${tag}`}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </section>
+    </>
   );
 }

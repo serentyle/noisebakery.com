@@ -1,8 +1,9 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import ThemeScript from '../components/ThemeScript.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import { siteDescription, siteName } from '../lib/site';
+import { ThemeSwitch } from '../components/blog/ThemeSwitch';
+import { RuleFigure } from '../components/RuleFigure';
+import { copyrightLine, siteDescription, siteName } from '../lib/site';
 import '../styles/global.css';
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
 
 const { title = siteName, description = siteDescription } = Astro.props;
 const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
+const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const blogCurrent = pathname.startsWith('/blog/') ? 'page' : undefined;
 ---
 
 <html lang="ja">
@@ -26,9 +29,37 @@ const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
   </head>
   <body>
-    <SiteHeader />
-    <main class="mx-auto w-full max-w-content px-4 py-8">
-      <slot />
-    </main>
+    <div class="shell">
+      <svg class="grain" aria-hidden="true">
+        <filter id="nb-grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"
+          ></feTurbulence>
+          <feColorMatrix type="saturate" values="0"></feColorMatrix>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#nb-grain)"></rect>
+      </svg>
+      <div class="column">
+        <header class="site-header">
+          <a class="wordmark" href="/">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22">
+              <rect x="2" y="3" width="12" height="4" fill="currentColor"></rect>
+              <rect x="8" y="9" width="12" height="4" fill="var(--accent)"></rect>
+              <rect x="0" y="15" width="9" height="4" fill="currentColor"></rect>
+              <rect x="13" y="15" width="4" height="4" fill="currentColor"></rect>
+            </svg>
+            <span class="wordmark-text">noise<span>bakery</span></span>
+          </a>
+          <nav class="site-nav" aria-label="メイン">
+            <a href="/blog/" aria-current={blogCurrent}>blog</a>
+            <ThemeSwitch client:load transition:persist="theme-switch" />
+          </nav>
+        </header>
+        <main>
+          <slot />
+        </main>
+        <RuleFigure kind="dither" />
+        <footer class="copyright">{copyrightLine(new Date())}</footer>
+      </div>
+    </div>
   </body>
 </html>

@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
-import { TagLink } from '@/components/blog/TagLink';
+import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from './BaseLayout.astro';
-import { formatPostDate } from '@/lib/post-card';
-import type { PublishedPost } from '@/lib/blog';
+import { getPublishedPosts, postPath } from '../lib/blog';
+import { neighborsOf, postSummary, tagListHref } from '../lib/posts';
+import type { PublishedPost } from '../lib/blog';
 
 interface Props {
   entry: PublishedPost;
@@ -11,28 +12,44 @@ interface Props {
 
 const { entry } = Astro.props;
 const { title, description, pubDate, tags, heroImage } = entry.data;
+const published = await getPublishedPosts();
+const summaries = published.map((post) =>
+  postSummary({
+    url: postPath(post.id),
+    title: post.data.title,
+    iso: post.data.pubDate.toISOString(),
+    tags: post.data.tags,
+  }),
+);
+const index = published.findIndex((post) => post.id === entry.id);
+const summary =
+  summaries[index] ??
+  postSummary({
+    url: postPath(entry.id),
+    title,
+    iso: pubDate.toISOString(),
+    tags,
+  });
+const neighbors = index < 0 ? [] : neighborsOf(summaries, index);
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="flex flex-col gap-6">
-    <header class="flex flex-col gap-3">
-      <h1 class="text-3xl font-medium">{title}</h1>
-      <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate.toISOString())}</time>
+  <article class="entry">
+    <h1>{title}</h1>
+    <div class="meta">
+      <time datetime={summary.iso}>{summary.date}</time>
       {
-        tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <li>
-                <TagLink tag={tag} />
-              </li>
-            ))}
-          </ul>
-        )
+        summary.tags.map((tag) => (
+          <a class="tag" href={tagListHref(tag)}>
+            #{tag}
+          </a>
+        ))
       }
-    </header>
+    </div>
     {
       heroImage && (
         <Image
+          class="hero"
           src={heroImage}
           width={heroImage.width}
           height={heroImage.height}
@@ -40,8 +57,23 @@ const { title, description, pubDate, tags, heroImage } = entry.data;
         />
       )
     }
-    <div class="prose dark:prose-invert max-w-none">
+    <div class="entry-prose">
       <slot />
     </div>
   </article>
+  {
+    neighbors.length > 0 && (
+      <>
+        <RuleFigure kind="macroblock" />
+        <nav class="neighbors" aria-label="前後の記事">
+          {neighbors.map((neighbor) => (
+            <div class="row">
+              <a href={neighbor.url}>{neighbor.title}</a>
+              <span class="neighbor-label">{neighbor.label}</span>
+            </div>
+          ))}
+        </nav>
+      </>
+    )
+  }
 </BaseLayout>

@@ -1,55 +1,51 @@
 ---
 import { Image } from 'astro:assets';
+import { TagLink } from '../components/blog/TagLink';
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from './BaseLayout.astro';
+import { entry, entryTitle, hero, meta, neighborLabel, neighbors, prose, quietLink, row } from '../lib/face';
 import { getPublishedPosts, postPath } from '../lib/blog';
-import { neighborsOf, postSummary, tagListHref } from '../lib/posts';
+import { neighborsOf, postSummary } from '../lib/posts';
 import type { PublishedPost } from '../lib/blog';
 
 interface Props {
   entry: PublishedPost;
 }
 
-const { entry } = Astro.props;
-const { title, description, pubDate, tags, heroImage } = entry.data;
+const { entry: post } = Astro.props;
+const { title, description, pubDate, tags, heroImage } = post.data;
 const published = await getPublishedPosts();
-const summaries = published.map((post) =>
+const summaries = published.map((item) =>
   postSummary({
-    url: postPath(post.id),
-    title: post.data.title,
-    iso: post.data.pubDate.toISOString(),
-    tags: post.data.tags,
+    url: postPath(item.id),
+    title: item.data.title,
+    iso: item.data.pubDate.toISOString(),
+    tags: item.data.tags,
   }),
 );
-const index = published.findIndex((post) => post.id === entry.id);
+const index = published.findIndex((item) => item.id === post.id);
 const summary =
   summaries[index] ??
   postSummary({
-    url: postPath(entry.id),
+    url: postPath(post.id),
     title,
     iso: pubDate.toISOString(),
     tags,
   });
-const neighbors = index < 0 ? [] : neighborsOf(summaries, index);
+const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="entry">
-    <h1>{title}</h1>
-    <div class="meta">
+  <article class={entry}>
+    <h1 class={entryTitle}>{title}</h1>
+    <div class={meta}>
       <time datetime={summary.iso}>{summary.date}</time>
-      {
-        summary.tags.map((tag) => (
-          <a class="tag" href={tagListHref(tag)}>
-            #{tag}
-          </a>
-        ))
-      }
+      {summary.tags.map((tag) => <TagLink tag={tag} />)}
     </div>
     {
       heroImage && (
         <Image
-          class="hero"
+          class={hero}
           src={heroImage}
           width={heroImage.width}
           height={heroImage.height}
@@ -57,19 +53,21 @@ const neighbors = index < 0 ? [] : neighborsOf(summaries, index);
         />
       )
     }
-    <div class="entry-prose">
+    <div class={prose}>
       <slot />
     </div>
   </article>
   {
-    neighbors.length > 0 && (
+    adjacent.length > 0 && (
       <>
         <RuleFigure kind="macroblock" />
-        <nav class="neighbors" aria-label="前後の記事">
-          {neighbors.map((neighbor) => (
-            <div class="row">
-              <a href={neighbor.url}>{neighbor.title}</a>
-              <span class="neighbor-label">{neighbor.label}</span>
+        <nav class={neighbors} aria-label="前後の記事">
+          {adjacent.map((neighbor) => (
+            <div class={row}>
+              <a class={quietLink} href={neighbor.url}>
+                {neighbor.title}
+              </a>
+              <span class={neighborLabel}>{neighbor.label}</span>
             </div>
           ))}
         </nav>

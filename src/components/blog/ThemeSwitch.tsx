@@ -1,3 +1,6 @@
+import { Button } from '@/components/ui/button';
+import { themeButton } from '@/lib/face';
+
 export function ThemeSwitch() {
   function flip() {
     const root = document.documentElement;
@@ -8,9 +11,16 @@ export function ThemeSwitch() {
   }
 
   return (
-    <button type="button" className="theme-switch" aria-label="ライト／ダーク切替" onClick={flip}>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className={themeButton}
+      aria-label="ライト／ダーク切替"
+      onClick={flip}
+    >
       <svg
-        className="hidden dark:block"
+        className="hidden size-[17px] dark:block"
         width="17"
         height="17"
         viewBox="0 0 24 24"
@@ -24,7 +34,7 @@ export function ThemeSwitch() {
         <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       </svg>
       <svg
-        className="dark:hidden"
+        className="size-[17px] dark:hidden"
         width="17"
         height="17"
         viewBox="0 0 24 24"
@@ -37,6 +47,6 @@ export function ThemeSwitch() {
       >
         <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
       </svg>
-    </button>
+    </Button>
   );
 }

@@ -1,12 +1,15 @@
 import { useLayoutEffect, useState } from 'react';
+import { Toggle } from '@/components/ui/toggle';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { RuleFigure } from '../RuleFigure';
+import { TagLink } from './TagLink';
+import { blogHead, blogList, byline, link, pageLabel, pill, pills, row } from '@/lib/face';
 import {
   selectedTagsFromSearch,
-  tagListHref,
   tagsInFirstSeenOrder,
   visiblePosts,
   type PostSummary,
-} from '../../lib/posts';
+} from '@/lib/posts';
 
 type Props = {
   posts: readonly PostSummary[];
@@ -32,54 +35,47 @@ export function TagFilter({ posts }: Props) {
   const tags = tagsInFirstSeenOrder(posts);
   const visible = visiblePosts(posts, selected);
 
-  function toggleTag(tag: string) {
-    setSelected((current) =>
-      current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag],
-    );
-  }
-
   return (
     <>
-      <section className="blog-head">
-        <h1>記事</h1>
-        <div className="pills" role="group" aria-label="タグで絞り込む">
-          <button
-            type="button"
-            className="pill"
-            aria-pressed={selected.length === 0}
-            onClick={() => setSelected((current) => (current.length === 0 ? current : []))}
+      <section className={blogHead}>
+        <h1 className={pageLabel}>記事</h1>
+        <div className={pills} role="group" aria-label="タグで絞り込む">
+          <Toggle
+            pressed={selected.length === 0}
+            onPressedChange={() => setSelected((current) => (current.length === 0 ? current : []))}
+            className={pill}
           >
             すべて
-          </button>
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              className="pill"
-              aria-pressed={selected.includes(tag)}
-              onClick={() => toggleTag(tag)}
-            >
-              {`#${tag}`}
-            </button>
-          ))}
+          </Toggle>
+          <ToggleGroup
+            multiple
+            value={selected}
+            onValueChange={setSelected}
+            spacing={2}
+            className="w-fit flex-wrap gap-2"
+          >
+            {tags.map((tag) => (
+              <ToggleGroupItem key={tag} value={tag} className={pill}>
+                {`#${tag}`}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </div>
       </section>
       <RuleFigure kind="ruler" />
-      <section className="blog-list">
+      <section className={blogList}>
         {visible.length === 0 ? (
           <p>該当する記事はありません。</p>
         ) : (
           visible.map((post) => (
-            <div key={post.url} className="row">
-              <a className="fg" href={post.url}>
+            <div key={post.url} className={row}>
+              <a className={link} href={post.url}>
                 {post.title}
               </a>
-              <div className="byline">
+              <div className={byline}>
                 <time dateTime={post.iso}>{post.date}</time>
                 {post.tags.map((tag) => (
-                  <a key={tag} className="tag" href={tagListHref(tag)}>
-                    {`#${tag}`}
-                  </a>
+                  <TagLink key={tag} tag={tag} />
                 ))}
               </div>
             </div>

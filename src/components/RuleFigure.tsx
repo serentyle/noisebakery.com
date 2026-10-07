@@ -1,3 +1,4 @@
+import { rule } from '../lib/face';
 import { ruleGeometry, ruleViewBox, type RuleKind } from '../lib/rule';
 
 type Props = {
@@ -12,7 +13,7 @@ export function RuleFigure({ kind }: Props) {
       viewBox={ruleViewBox}
       preserveAspectRatio="none"
       overflow="visible"
-      className="rule"
+      className={rule}
     >
       {rects.map((rect, index) => (
         <rect key={index} x={rect.x} y={rect.y} width={rect.w} height={rect.h} fill={rect.fill} />

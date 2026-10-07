@@ -1,6 +1,7 @@
 ---
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { allPosts, fg, homeList, homeTime, intro, link, row, sectionLabel } from '../lib/face';
 import { getPublishedPosts, postPath } from '../lib/blog';
 import { postSummary } from '../lib/posts';
 
@@ -15,30 +16,30 @@ const posts = (await getPublishedPosts()).slice(0, 5).map((post) =>
 ---
 
 <BaseLayout>
-  <section class="intro">
-    <p>
-      <span class="fg">Go</span> と<span class="fg">決済基盤</span>、<span class="fg">コーヒー</span>、ときどき<span class="fg">ボートレース</span>。雑音まじりのまま置いておく技術メモと日々の記録。
+  <section class={intro}>
+    <p class="m-0">
+      <span class={fg}>Go</span> と<span class={fg}>決済基盤</span>、<span class={fg}>コーヒー</span>、ときどき<span class={fg}>ボートレース</span>。雑音まじりのまま置いておく技術メモと日々の記録。
     </p>
   </section>
   <RuleFigure kind="trace" />
-  <section class="home-list" aria-labelledby="posts-h">
-    <h2 id="posts-h">記事</h2>
+  <section class={homeList} aria-labelledby="posts-h">
+    <h2 id="posts-h" class={sectionLabel}>記事</h2>
     {
       posts.length === 0 ? (
         <p>まだ記事がありません。</p>
       ) : (
         posts.map((post) => (
-          <div class="row">
-            <a class="fg" href={post.url}>
+          <div class={row}>
+            <a class={link} href={post.url}>
               {post.title}
             </a>
-            <time class="home-time" datetime={post.iso}>
+            <time class={homeTime} datetime={post.iso}>
               {post.date}
             </time>
           </div>
         ))
       )
     }
-    <a class="all-posts" href="/blog/">すべての記事</a>
+    <a class={allPosts} href="/blog/">すべての記事</a>
   </section>
 </BaseLayout>

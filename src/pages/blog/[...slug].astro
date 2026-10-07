@@ -2,23 +2,26 @@
 import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getPublishedPosts, type PublishedPost } from '../../lib/blog';
+import { neighborsOf, toSummary, type Neighbor } from '../../lib/post-summary';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  return posts.map((entry) => ({
+  const summaries = posts.map(toSummary);
+  return posts.map((entry, index) => ({
     params: { slug: entry.id },
-    props: { entry },
+    props: { entry, neighbors: neighborsOf(summaries, index) },
   }));
 }
 
 interface Props {
   entry: PublishedPost;
+  neighbors: readonly Neighbor[];
 }
 
-const { entry } = Astro.props;
+const { entry, neighbors } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<PostLayout entry={entry}>
+<PostLayout entry={entry} neighbors={neighbors}>
   <Content />
 </PostLayout>

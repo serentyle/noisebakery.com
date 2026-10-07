@@ -1,34 +1,26 @@
 ---
 import { Image } from 'astro:assets';
-import { TagLink } from '@/components/blog/TagLink';
+import { PostMeta } from '../components/PostList';
+import { Rule } from '../components/Rule';
 import BaseLayout from './BaseLayout.astro';
-import { formatPostDate } from '@/lib/post-card';
-import type { PublishedPost } from '@/lib/blog';
+import { type PublishedPost } from '../lib/blog';
+import { toSummary, type Neighbor } from '../lib/post-summary';
 
 interface Props {
   entry: PublishedPost;
+  neighbors: readonly Neighbor[];
 }
 
-const { entry } = Astro.props;
-const { title, description, pubDate, tags, heroImage } = entry.data;
+const { entry, neighbors } = Astro.props;
+const post = toSummary(entry);
+const { description, heroImage } = entry.data;
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="flex flex-col gap-6">
+<BaseLayout title={post.title} description={description}>
+  <article class="flex flex-col gap-8">
     <header class="flex flex-col gap-3">
-      <h1 class="text-3xl font-medium">{title}</h1>
-      <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate.toISOString())}</time>
-      {
-        tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <li>
-                <TagLink tag={tag} />
-              </li>
-            ))}
-          </ul>
-        )
-      }
+      <h1 class="text-2xl font-medium leading-snug">{post.title}</h1>
+      <PostMeta post={post} meta="date-and-tags" />
     </header>
     {
       heroImage && (
@@ -36,12 +28,30 @@ const { title, description, pubDate, tags, heroImage } = entry.data;
           src={heroImage}
           width={heroImage.width}
           height={heroImage.height}
-          alt={title}
+          alt={post.title}
+          class="h-auto w-full"
         />
       )
     }
     <div class="prose dark:prose-invert max-w-none">
       <slot />
     </div>
+    {
+      neighbors.length > 0 && (
+        <div class="flex flex-col gap-6">
+          <Rule kind="block-noise" />
+          <nav aria-label="前後の記事">
+            <ul class="flex flex-col gap-6">
+              {neighbors.map((neighbor) => (
+                <li>
+                  <a href={neighbor.post.url}>{neighbor.post.title}</a>
+                  <p class="text-xs text-muted-foreground">{neighbor.label}</p>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )
+    }
   </article>
 </BaseLayout>

@@ -2,7 +2,8 @@
 import { ClientRouter } from 'astro:transitions';
 import ThemeScript from '../components/ThemeScript.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { siteDescription, siteName } from '../lib/site';
+import { Rule } from '../components/Rule';
+import { copyrightLine, siteDescription, siteName } from '../lib/site';
 import '../styles/global.css';
 
 interface Props {
@@ -26,9 +27,15 @@ const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
   </head>
   <body>
-    <SiteHeader />
-    <main class="mx-auto w-full max-w-content px-4 py-8">
-      <slot />
-    </main>
+    <div class="mx-auto w-full max-w-content px-4">
+      <SiteHeader />
+      <main class="py-6">
+        <slot />
+      </main>
+      <footer class="mt-20 flex flex-col gap-4 pb-12 text-sm text-muted-foreground">
+        <Rule kind="dither" />
+        <p>{copyrightLine(new Date())}</p>
+      </footer>
+    </div>
   </body>
 </html>

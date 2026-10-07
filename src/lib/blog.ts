@@ -18,11 +18,3 @@ export async function getPublishedPosts(): Promise<PublishedPost[]> {
     return 0;
   });
 }
-
-export function postPath(id: string): string {
-  const encoded = id
-    .split('/')
-    .map((segment) => encodeURIComponent(segment))
-    .join('/');
-  return `/blog/${encoded}/`;
-}

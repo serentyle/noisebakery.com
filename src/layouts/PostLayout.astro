@@ -4,18 +4,8 @@ import { TagLink } from '../components/blog/TagLink';
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from './BaseLayout.astro';
 import { getPublishedPosts, postPath } from '../lib/blog';
-import { quietLink, row } from '../lib/face';
 import { neighborsOf, postSummary } from '../lib/posts';
 import type { PublishedPost } from '../lib/blog';
-
-const entryClass = 'pt-14 pb-10';
-const entryTitle = 'm-0 text-[26px] leading-[1.5] font-bold tracking-[-0.01em]';
-const meta = 'mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[13px] leading-[1.6]';
-const hero = 'mt-6 block h-auto w-auto max-w-full';
-const prose =
-  "mt-10 [&_h2]:mt-12 [&_h2]:mb-3 [&_h2]:text-[18px] [&_h2]:leading-[1.6] [&_h2]:font-bold [&_p]:mt-0 [&_p]:mb-6 [&_pre]:mb-6 [&_pre]:overflow-x-auto [&_pre]:bg-[#E6E5E1] [&_pre]:p-5 [&_pre]:font-['IBM_Plex_Mono','IBM_Plex_Sans_JP',monospace] [&_pre]:text-[13px] [&_pre]:leading-[1.75] dark:[&_pre]:bg-[#141414]";
-const neighbors = 'pt-[18px] pb-8';
-const neighborLabel = 'block text-[13px] leading-[1.6]';
 
 interface Props {
   entry: PublishedPost;
@@ -45,16 +35,16 @@ const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class={entryClass}>
-    <h1 class={entryTitle}>{title}</h1>
-    <div class={meta}>
+  <article class="pt-14 pb-10">
+    <h1 class="m-0 text-title font-bold tracking-[-0.01em]">{title}</h1>
+    <div class="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-meta">
       <time datetime={summary.iso}>{summary.date}</time>
       {summary.tags.map((tag) => <TagLink tag={tag} />)}
     </div>
     {
       heroImage && (
         <Image
-          class={hero}
+          class="mt-6 block h-auto w-auto max-w-full"
           src={heroImage}
           width={heroImage.width}
           height={heroImage.height}
@@ -62,7 +52,9 @@ const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
         />
       )
     }
-    <div class={prose}>
+    <div
+      class="mt-10 [&_h2]:mt-12 [&_h2]:mb-3 [&_h2]:text-lg [&_h2]:font-bold [&_p]:mt-0 [&_p]:mb-6 [&_pre]:mb-6 [&_pre]:overflow-x-auto [&_pre]:bg-muted [&_pre]:p-5 [&_pre]:font-mono [&_pre]:text-meta [&_pre]:leading-[1.75]"
+    >
       <slot />
     </div>
   </article>
@@ -70,13 +62,13 @@ const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
     adjacent.length > 0 && (
       <>
         <RuleFigure kind="macroblock" />
-        <nav class={neighbors} aria-label="前後の記事">
+        <nav class="pt-[18px] pb-8" aria-label="前後の記事">
           {adjacent.map((neighbor) => (
-            <div class={row}>
-              <a class={quietLink} href={neighbor.url}>
+            <div class="py-2.5">
+              <a class="link" href={neighbor.url}>
                 {neighbor.title}
               </a>
-              <span class={neighborLabel}>{neighbor.label}</span>
+              <span class="block text-meta">{neighbor.label}</span>
             </div>
           ))}
         </nav>

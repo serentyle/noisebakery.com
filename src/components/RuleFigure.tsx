@@ -1,7 +1,4 @@
-import { fg } from '../lib/face';
 import { ruleGeometry, ruleViewBox, type RuleKind } from '../lib/rule';
-
-const rule = `block h-2 w-full overflow-visible ${fg}`;
 
 type Props = {
   kind: RuleKind;
@@ -15,7 +12,7 @@ export function RuleFigure({ kind }: Props) {
       viewBox={ruleViewBox}
       preserveAspectRatio="none"
       overflow="visible"
-      className={rule}
+      className="block h-2 w-full overflow-visible text-foreground"
     >
       {rects.map((rect, index) => (
         <rect key={index} x={rect.x} y={rect.y} width={rect.w} height={rect.h} fill={rect.fill} />

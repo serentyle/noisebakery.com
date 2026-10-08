@@ -2,14 +2,7 @@
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts, postPath } from '../lib/blog';
-import { fg, link, quietLink, row } from '../lib/face';
 import { postSummary } from '../lib/posts';
-
-const intro = 'pt-14 pb-10';
-const homeList = 'pt-7 pb-8';
-const sectionLabel = 'mt-0 mb-3 text-[15px] font-normal';
-const homeTime = 'block text-[13px] leading-[1.6]';
-const allPosts = `${quietLink} mt-2.5 inline-block py-1.5 text-[14px]`;
 
 const posts = (await getPublishedPosts()).slice(0, 5).map((post) =>
   postSummary({
@@ -22,30 +15,30 @@ const posts = (await getPublishedPosts()).slice(0, 5).map((post) =>
 ---
 
 <BaseLayout>
-  <section class={intro}>
+  <section class="pt-14 pb-10">
     <p class="m-0">
-      <span class={fg}>Go</span> と<span class={fg}>決済基盤</span>、<span class={fg}>コーヒー</span>、ときどき<span class={fg}>ボートレース</span>。雑音まじりのまま置いておく技術メモと日々の記録。
+      <span class="text-foreground">Go</span> と<span class="text-foreground">決済基盤</span>、<span class="text-foreground">コーヒー</span>、ときどき<span class="text-foreground">ボートレース</span>。雑音まじりのまま置いておく技術メモと日々の記録。
     </p>
   </section>
   <RuleFigure kind="trace" />
-  <section class={homeList} aria-labelledby="posts-h">
-    <h2 id="posts-h" class={sectionLabel}>記事</h2>
+  <section class="pt-7 pb-8" aria-labelledby="posts-h">
+    <h2 id="posts-h" class="mt-0 mb-3 text-label font-normal">記事</h2>
     {
       posts.length === 0 ? (
         <p>まだ記事がありません。</p>
       ) : (
         posts.map((post) => (
-          <div class={row}>
-            <a class={link} href={post.url}>
+          <div class="py-2.5">
+            <a class="text-foreground link" href={post.url}>
               {post.title}
             </a>
-            <time class={homeTime} datetime={post.iso}>
+            <time class="block text-meta" datetime={post.iso}>
               {post.date}
             </time>
           </div>
         ))
       )
     }
-    <a class={allPosts} href="/blog/">すべての記事</a>
+    <a class="link mt-2.5 inline-block py-1.5 text-sm" href="/blog/">すべての記事</a>
   </section>
 </BaseLayout>

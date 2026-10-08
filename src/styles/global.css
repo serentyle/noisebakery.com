@@ -8,6 +8,18 @@
 
 @theme {
     --container-content: 40rem;
+    --text-body: 16px;
+    --text-body--line-height: 1.9;
+    --text-title: 26px;
+    --text-title--line-height: 1.5;
+    --text-label: 15px;
+    --text-meta: 13px;
+    --text-meta--line-height: 1.6;
+    --font-mono: 'IBM Plex Mono', 'IBM Plex Sans JP', monospace;
+}
+
+@utility link {
+    @apply underline-offset-4 decoration-1 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px];
 }
 
 @theme inline {

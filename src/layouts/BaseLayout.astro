@@ -7,21 +7,8 @@ import '@fontsource/ibm-plex-mono/600.css';
 import ThemeScript from '../components/ThemeScript.astro';
 import { ThemeSwitch } from '../components/blog/ThemeSwitch';
 import { RuleFigure } from '../components/RuleFigure';
-import { fg, mono, quietLink } from '../lib/face';
 import { copyrightLine, siteDescription, siteName } from '../lib/site';
 import '../styles/global.css';
-
-const sans = "font-['IBM_Plex_Sans_JP',system-ui,sans-serif]";
-const page = `relative min-h-screen overflow-hidden bg-[#F2F2F0] text-[16px] leading-[1.9] text-[#6B6A66] tabular-nums dark:bg-black dark:text-[#9C9A95] ${sans}`;
-const grain = 'pointer-events-none absolute inset-0 h-full w-full opacity-[0.09] dark:opacity-20';
-const column = 'relative mx-auto w-full max-w-[600px] px-6 pb-16';
-const header = 'flex items-center justify-between gap-4 pt-10';
-const wordmark = `flex min-h-11 items-center gap-2.5 ${fg}`;
-const wordmarkText = `${mono} text-[15px] font-semibold tracking-[-0.01em]`;
-const wordmarkRest = 'font-normal text-[#6B6A66] dark:text-[#9C9A95]';
-const nav = 'flex items-center gap-1 text-[15px]';
-const blogLink = `${quietLink} mr-1.5 py-2.5 aria-[current=page]:text-[#222222] dark:aria-[current=page]:text-[#E6E4DF]`;
-const copyright = 'pt-7 text-[13px]';
 
 interface Props {
   title?: string;
@@ -46,8 +33,13 @@ const blogCurrent = pathname.startsWith('/blog/') ? 'page' : undefined;
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
   </head>
   <body>
-    <div class={page}>
-      <svg class={grain} aria-hidden="true">
+    <div
+      class="relative min-h-screen overflow-hidden bg-background font-['IBM_Plex_Sans_JP',system-ui,sans-serif] text-body text-muted-foreground tabular-nums"
+    >
+      <svg
+        class="pointer-events-none absolute inset-0 h-full w-full opacity-[0.09] dark:opacity-20"
+        aria-hidden="true"
+      >
         <filter id="nb-grain">
           <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"
           ></feTurbulence>
@@ -55,19 +47,27 @@ const blogCurrent = pathname.startsWith('/blog/') ? 'page' : undefined;
         </filter>
         <rect width="100%" height="100%" filter="url(#nb-grain)"></rect>
       </svg>
-      <div class={column}>
-        <header class={header}>
-          <a class={wordmark} href="/">
+      <div class="relative mx-auto w-full max-w-[600px] px-6 pb-16">
+        <header class="flex items-center justify-between gap-4 pt-10">
+          <a class="flex min-h-11 items-center gap-2.5 text-foreground" href="/">
             <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22">
               <rect x="2" y="3" width="12" height="4" fill="currentColor"></rect>
               <rect x="8" y="9" width="12" height="4" fill="#A8602A"></rect>
               <rect x="0" y="15" width="9" height="4" fill="currentColor"></rect>
               <rect x="13" y="15" width="4" height="4" fill="currentColor"></rect>
             </svg>
-            <span class={wordmarkText}>noise<span class={wordmarkRest}>bakery</span></span>
+            <span class="font-mono text-label font-semibold tracking-[-0.01em]">
+              noise<span class="font-normal text-muted-foreground">bakery</span>
+            </span>
           </a>
-          <nav class={nav} aria-label="メイン">
-            <a class={blogLink} href="/blog/" aria-current={blogCurrent}>blog</a>
+          <nav class="flex items-center gap-1 text-label" aria-label="メイン">
+            <a
+              class="link mr-1.5 py-2.5 aria-[current=page]:text-foreground"
+              href="/blog/"
+              aria-current={blogCurrent}
+            >
+              blog
+            </a>
             <ThemeSwitch client:load transition:persist="theme-switch" />
           </nav>
         </header>
@@ -75,7 +75,7 @@ const blogCurrent = pathname.startsWith('/blog/') ? 'page' : undefined;
           <slot />
         </main>
         <RuleFigure kind="dither" />
-        <footer class={copyright}>{copyrightLine(new Date())}</footer>
+        <footer class="pt-7 text-meta">{copyrightLine(new Date())}</footer>
       </div>
     </div>
   </body>

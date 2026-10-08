@@ -1,8 +1,5 @@
 import { Button } from '@/components/ui/button';
 
-const themeButton =
-  'size-11 -mr-[13px] cursor-pointer border-0 bg-transparent p-0 text-[#6B6A66] shadow-none hover:bg-transparent hover:text-[#6B6A66] focus-visible:ring-0 active:translate-y-0 dark:bg-transparent dark:text-[#9C9A95] dark:hover:bg-transparent dark:hover:text-[#9C9A95]';
-
 export function ThemeSwitch() {
   function flip() {
     const root = document.documentElement;
@@ -17,7 +14,7 @@ export function ThemeSwitch() {
       type="button"
       variant="ghost"
       size="icon"
-      className={themeButton}
+      className="size-11 -mr-[13px] cursor-pointer border-0 bg-transparent p-0 text-muted-foreground shadow-none hover:bg-transparent hover:text-muted-foreground focus-visible:ring-0 active:translate-y-0 dark:bg-transparent dark:hover:bg-transparent"
       aria-label="ライト／ダーク切替"
       onClick={flip}
     >

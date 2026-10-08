@@ -1,23 +1,17 @@
-import { useLayoutEffect, useState } from 'react';
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { RuleFigure } from '../RuleFigure';
-import { TagLink } from './TagLink';
-import { link, mono, row } from '@/lib/face';
 import {
   selectedTagsFromSearch,
   tagsInFirstSeenOrder,
   visiblePosts,
   type PostSummary,
 } from '@/lib/posts';
+import { useLayoutEffect, useState } from 'react';
+import { RuleFigure } from '../RuleFigure';
+import { TagLink } from './TagLink';
 
-const blogHead = 'pt-14 pb-8';
-const pageLabel = 'mt-0 mb-0 text-[15px] font-normal';
-const pills = `mt-4 flex flex-wrap items-center gap-2 text-[13px] leading-none ${mono}`;
 const pill =
-  'h-auto min-h-0 min-w-0 rounded-full border border-[#DCDBD6] bg-transparent px-3 py-2 text-[13px] font-normal text-[#222222] shadow-none hover:bg-transparent hover:text-[#222222] focus-visible:ring-0 data-[state=on]:border-[#222222] data-[state=on]:bg-[#222222] data-[state=on]:text-[#F2F2F0] aria-pressed:border-[#222222] aria-pressed:bg-[#222222] aria-pressed:text-[#F2F2F0] dark:border-[#262624] dark:text-[#E6E4DF] dark:hover:bg-transparent dark:hover:text-[#E6E4DF] dark:data-[state=on]:border-[#E6E4DF] dark:data-[state=on]:bg-[#E6E4DF] dark:data-[state=on]:text-black dark:aria-pressed:border-[#E6E4DF] dark:aria-pressed:bg-[#E6E4DF] dark:aria-pressed:text-black';
-const blogList = 'pt-4 pb-8';
-const byline = 'flex flex-wrap gap-3 text-[13px] leading-[1.6]';
+  'h-auto min-h-0 min-w-0 rounded-full border border-border bg-transparent px-3 py-2 text-meta leading-none font-normal text-foreground shadow-none hover:bg-transparent hover:text-foreground focus-visible:ring-0 data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background';
 
 type Props = {
   posts: readonly PostSummary[];
@@ -45,9 +39,13 @@ export function TagFilter({ posts }: Props) {
 
   return (
     <>
-      <section className={blogHead}>
-        <h1 className={pageLabel}>記事</h1>
-        <div className={pills} role="group" aria-label="タグで絞り込む">
+      <section className="pt-14 pb-8">
+        <h1 className="mt-0 mb-0 text-label font-normal">記事</h1>
+        <div
+          className="mt-4 flex flex-wrap items-center gap-2 text-meta leading-none font-mono"
+          role="group"
+          aria-label="タグで絞り込む"
+        >
           <Toggle
             pressed={selected.length === 0}
             onPressedChange={() => setSelected((current) => (current.length === 0 ? current : []))}
@@ -63,7 +61,11 @@ export function TagFilter({ posts }: Props) {
             className="w-fit flex-wrap gap-2"
           >
             {tags.map((tag) => (
-              <ToggleGroupItem key={tag} value={tag} className={pill}>
+              <ToggleGroupItem
+                key={tag}
+                value={tag}
+                className={pill}
+              >
                 {`#${tag}`}
               </ToggleGroupItem>
             ))}
@@ -71,16 +73,16 @@ export function TagFilter({ posts }: Props) {
         </div>
       </section>
       <RuleFigure kind="ruler" />
-      <section className={blogList}>
+      <section className="pt-4 pb-8">
         {visible.length === 0 ? (
           <p>該当する記事はありません。</p>
         ) : (
           visible.map((post) => (
-            <div key={post.url} className={row}>
-              <a className={link} href={post.url}>
+            <div key={post.url} className="py-2.5">
+              <a className="text-foreground link" href={post.url}>
                 {post.title}
               </a>
-              <div className={byline}>
+              <div className="flex flex-wrap gap-3 text-meta">
                 <time dateTime={post.iso}>{post.date}</time>
                 {post.tags.map((tag) => (
                   <TagLink key={tag} tag={tag} />

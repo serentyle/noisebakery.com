@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { formatPostDate, neighborsOf, visiblePosts, type PostSummary } from '../src/lib/posts.ts';
+import { formatPostDate, neighborsOf, visiblePosts, type PostSummary } from '../src/lib/blog.ts';
 import { ruleGeometry } from '../src/lib/rule.ts';
 import { copyrightLine } from '../src/lib/site.ts';
 

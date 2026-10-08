@@ -5,7 +5,7 @@ import {
   tagsInFirstSeenOrder,
   visiblePosts,
   type PostSummary,
-} from '@/lib/posts';
+} from '@/lib/blog';
 import { useLayoutEffect, useState } from 'react';
 import { RuleFigure } from '../RuleFigure';
 import { TagLink } from './TagLink';

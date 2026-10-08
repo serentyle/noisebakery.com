@@ -3,24 +3,16 @@ import { Image } from 'astro:assets';
 import { TagLink } from '../components/blog/TagLink';
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from './BaseLayout.astro';
-import {
-  getPublishedPosts,
-  neighborsOf,
-  postSummary,
-  type PublishedPost,
-} from '../lib/blog';
+import type { Neighbor, PostSummary, PublishedPost } from '../lib/blog';
 
 interface Props {
   entry: PublishedPost;
+  summary: PostSummary;
+  neighbors: Neighbor[];
 }
 
-const { entry: post } = Astro.props;
-const { title, description, heroImage } = post.data;
-const published = await getPublishedPosts();
-const summaries = published.map((item) => postSummary(item));
-const index = published.findIndex((item) => item.id === post.id);
-const summary = summaries[index] ?? postSummary(post);
-const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
+const { entry, summary, neighbors } = Astro.props;
+const { title, description, heroImage } = entry.data;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -35,8 +27,6 @@ const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
         <Image
           class="mt-6 block h-auto w-auto max-w-full"
           src={heroImage}
-          width={heroImage.width}
-          height={heroImage.height}
           alt={title}
         />
       )
@@ -48,11 +38,11 @@ const adjacent = index < 0 ? [] : neighborsOf(summaries, index);
     </div>
   </article>
   {
-    adjacent.length > 0 && (
+    neighbors.length > 0 && (
       <>
         <RuleFigure kind="macroblock" />
         <nav class="pt-[18px] pb-8" aria-label="前後の記事">
-          {adjacent.map((neighbor) => (
+          {neighbors.map((neighbor) => (
             <div class="py-2.5">
               <a class="link" href={neighbor.url}>
                 {neighbor.title}

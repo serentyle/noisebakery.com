@@ -18,25 +18,6 @@ export type Neighbor = {
   label: '前の記事' | '次の記事';
 };
 
-function isPublished(post: CollectionEntry<'blog'>): post is PublishedPost {
-  return post.data.draft !== true;
-}
-
-export async function getPublishedPosts(): Promise<PublishedPost[]> {
-  if (!import.meta.env.SSR) {
-    throw new Error('getPublishedPosts is server-only');
-  }
-  const { getCollection } = await import('astro:content');
-  const posts = await getCollection('blog');
-  return posts.filter(isPublished).sort((a, b) => {
-    const byDate = b.data.pubDate.getTime() - a.data.pubDate.getTime();
-    if (byDate !== 0) return byDate;
-    if (a.id < b.id) return -1;
-    if (a.id > b.id) return 1;
-    return 0;
-  });
-}
-
 function datePart(parts: Intl.DateTimeFormatPart[], type: Intl.DateTimeFormatPartTypes): string {
   return parts.find((part) => part.type === type)?.value ?? '';
 }
@@ -51,14 +32,14 @@ export function formatPostDate(iso: string): string {
   return `${datePart(parts, 'year')}.${datePart(parts, 'month')}.${datePart(parts, 'day')}`;
 }
 
-export function postSummary(post: PublishedPost): PostSummary {
+export function toPostSummary(post: PublishedPost): PostSummary {
   const iso = post.data.pubDate.toISOString();
   return {
     url: `/blog/${post.id}/`,
     title: post.data.title,
     iso,
     date: formatPostDate(iso),
-    tags: post.data.tags.filter((tag) => tag.length > 0),
+    tags: post.data.tags,
   };
 }
 

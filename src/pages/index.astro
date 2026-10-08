@@ -1,9 +1,10 @@
 ---
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedPosts, postSummary } from '../lib/blog';
+import { toPostSummary } from '../lib/blog';
+import { getPublishedPosts } from '../lib/posts';
 
-const posts = (await getPublishedPosts()).slice(0, 5).map((post) => postSummary(post));
+const posts = (await getPublishedPosts()).slice(0, 5).map((post) => toPostSummary(post));
 ---
 
 <BaseLayout>

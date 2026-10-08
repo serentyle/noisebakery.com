@@ -1,12 +1,12 @@
 ---
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedPosts, postPath } from '../lib/blog';
+import { getPublishedPosts } from '../lib/blog';
 import { postSummary } from '../lib/posts';
 
 const posts = (await getPublishedPosts()).slice(0, 5).map((post) =>
   postSummary({
-    url: postPath(post.id),
+    url: `/blog/${post.id}/`,
     title: post.data.title,
     iso: post.data.pubDate.toISOString(),
     tags: post.data.tags,

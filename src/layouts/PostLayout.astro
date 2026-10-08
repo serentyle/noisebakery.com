@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import { TagLink } from '../components/blog/TagLink';
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from './BaseLayout.astro';
-import { getPublishedPosts, postPath } from '../lib/blog';
+import { getPublishedPosts } from '../lib/blog';
 import { neighborsOf, postSummary } from '../lib/posts';
 import type { PublishedPost } from '../lib/blog';
 
@@ -16,7 +16,7 @@ const { title, description, pubDate, tags, heroImage } = post.data;
 const published = await getPublishedPosts();
 const summaries = published.map((item) =>
   postSummary({
-    url: postPath(item.id),
+    url: `/blog/${item.id}/`,
     title: item.data.title,
     iso: item.data.pubDate.toISOString(),
     tags: item.data.tags,
@@ -26,7 +26,7 @@ const index = published.findIndex((item) => item.id === post.id);
 const summary =
   summaries[index] ??
   postSummary({
-    url: postPath(post.id),
+    url: `/blog/${post.id}/`,
     title,
     iso: pubDate.toISOString(),
     tags,

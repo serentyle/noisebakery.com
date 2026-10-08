@@ -1,5 +1,7 @@
-import { rule } from '../lib/face';
+import { fg } from '../lib/face';
 import { ruleGeometry, ruleViewBox, type RuleKind } from '../lib/rule';
+
+const rule = `block h-2 w-full overflow-visible ${fg}`;
 
 type Props = {
   kind: RuleKind;

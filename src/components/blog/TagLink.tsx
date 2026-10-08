@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge';
-import { tag } from '@/lib/face';
+import { mono, quietLink } from '@/lib/face';
 import { tagListHref } from '@/lib/posts';
+
+const tagClass = `${mono} ${quietLink} text-[12px]`;
 
 type Props = {
   tag: string;
@@ -8,7 +10,7 @@ type Props = {
 
 export function TagLink({ tag: name }: Props) {
   return (
-    <Badge variant="link" className={tag} render={<a href={tagListHref(name)} />}>
+    <Badge variant="link" className={tagClass} render={<a href={tagListHref(name)} />}>
       {`#${name}`}
     </Badge>
   );

@@ -1,9 +1,15 @@
 ---
 import { RuleFigure } from '../components/RuleFigure';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { allPosts, fg, homeList, homeTime, intro, link, row, sectionLabel } from '../lib/face';
 import { getPublishedPosts, postPath } from '../lib/blog';
+import { fg, link, quietLink, row } from '../lib/face';
 import { postSummary } from '../lib/posts';
+
+const intro = 'pt-14 pb-10';
+const homeList = 'pt-7 pb-8';
+const sectionLabel = 'mt-0 mb-3 text-[15px] font-normal';
+const homeTime = 'block text-[13px] leading-[1.6]';
+const allPosts = `${quietLink} mt-2.5 inline-block py-1.5 text-[14px]`;
 
 const posts = (await getPublishedPosts()).slice(0, 5).map((post) =>
   postSummary({

@@ -1,9 +1,9 @@
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
-  selectedTagsFromSearch,
-  tagsInFirstSeenOrder,
-  visiblePosts,
+  parseTagQuery,
+  collectTags,
+  filterPostsByTags,
   type PostSummary,
 } from '@/lib/blog';
 import { useLayoutEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export function TagFilter({ posts }: Props) {
 
   useLayoutEffect(() => {
     const sync = () => {
-      const next = selectedTagsFromSearch(window.location.search);
+      const next = parseTagQuery(window.location.search);
       setSelected((current) => (sameTags(current, next) ? current : next));
     };
     sync();
@@ -34,8 +34,8 @@ export function TagFilter({ posts }: Props) {
     return () => document.removeEventListener('astro:page-load', sync);
   }, []);
 
-  const tags = tagsInFirstSeenOrder(posts);
-  const visible = visiblePosts(posts, selected);
+  const tags = collectTags(posts);
+  const visible = filterPostsByTags(posts, selected);
 
   return (
     <>

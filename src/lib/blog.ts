@@ -43,30 +43,21 @@ export function toPostSummary(post: PublishedPost): PostSummary {
   };
 }
 
-export function selectedTagsFromSearch(search: string): string[] {
-  const tags: string[] = [];
-  for (const tag of new URLSearchParams(search).getAll('tag')) {
-    if (tag.length > 0 && !tags.includes(tag)) tags.push(tag);
-  }
-  return tags;
+export function parseTagQuery(search: string): string[] {
+  return [...new Set(new URLSearchParams(search).getAll('tag'))].filter(Boolean);
 }
 
-export function tagsInFirstSeenOrder(posts: readonly PostSummary[]): string[] {
-  const tags: string[] = [];
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      if (!tags.includes(tag)) tags.push(tag);
-    }
-  }
-  return tags;
+export function collectTags(posts: readonly PostSummary[]): string[] {
+  return [...new Set(posts.flatMap((post) => post.tags))];
 }
 
-export function visiblePosts(
+export function filterPostsByTags(
   posts: readonly PostSummary[],
-  selected: readonly string[],
+  tags: readonly string[],
 ): readonly PostSummary[] {
-  if (selected.length === 0) return posts;
-  return posts.filter((post) => post.tags.some((tag) => selected.includes(tag)));
+  if (tags.length === 0) return posts;
+  const tagSet = new Set(tags);
+  return posts.filter((post) => post.tags.some((tag) => tagSet.has(tag)));
 }
 
 export function neighborsOf(summaries: readonly PostSummary[], index: number): Neighbor[] {

@@ -1,37 +1,45 @@
 ---
-import { RuleFigure } from '../components/RuleFigure';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedArticles } from '../lib/collections';
-import { toArticleSummary } from '../lib/blog';
+import { Rule } from "../components/Rule";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { toArticleSummary } from "../lib/blog";
+import { getPublishedArticles } from "../lib/collections";
 
-const articles = (await getPublishedArticles()).slice(0, 5).map((article) => toArticleSummary(article));
+const articles = (await getPublishedArticles())
+  .slice(0, 5)
+  .map((article) => toArticleSummary(article));
 ---
 
 <BaseLayout>
-  <section class="pt-14 pb-10">
+  <section class="pt-4 pb-4">
     <p class="m-0">
-      <span class="text-foreground">Go</span> と<span class="text-foreground">決済基盤</span>、<span class="text-foreground">コーヒー</span>、ときどき<span class="text-foreground">ボートレース</span>。雑音まじりのまま置いておく技術メモと日々の記録。
+      <span class="text-foreground">Go</span> と<span class="text-foreground"
+        >決済基盤</span
+      >、<span class="text-foreground">コーヒー</span>、ときどき<span
+        class="text-foreground">ボートレース</span
+      >。雑音まじりのまま置いておく技術メモと日々の記録。
     </p>
   </section>
-  <RuleFigure kind="trace" />
-  <section class="pt-7 pb-8" aria-labelledby="articles-h">
-    <h2 id="articles-h" class="mt-0 mb-3 text-label font-normal">記事</h2>
+  <Rule kind="trace" seed={3} />
+  <section class="pt-4 pb-4" aria-labelledby="articles-h">
+    <h2 id="articles-h" class="mt-0 mb-2 text-sm font-normal">記事</h2>
     {
       articles.length === 0 ? (
         <p>まだ記事がありません。</p>
       ) : (
         articles.map((article) => (
-          <div class="py-2.5">
-            <a class="text-foreground link" href={article.url}>
+          <div class="py-1.5">
+            <a class="text-foreground link leading-5" href={article.url}>
               {article.title}
             </a>
-            <time class="block text-meta" datetime={article.iso}>
+            <time class="block text-sm" datetime={article.iso}>
               {article.date}
             </time>
           </div>
         ))
       )
     }
-    <a class="link mt-2.5 inline-block py-1.5 text-sm" href="/blog/">すべての記事</a>
+    <a class="link mt-2 inline-block py-1.5 text-sm" href="/blog/"
+      >すべての記事</a
+    >
   </section>
 </BaseLayout>

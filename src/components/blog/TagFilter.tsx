@@ -3,11 +3,11 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { collectTags, filterArticlesByTags, parseTagQuery } from '@/lib/blog';
 import type { ArticleSummary } from '@/lib/types';
 import { useLayoutEffect, useState } from 'react';
-import { RuleFigure } from '../RuleFigure';
+import { Rule } from '../Rule';
 import { TagLink } from './TagLink';
 
-const pill =
-  'h-auto min-h-0 min-w-0 rounded-full border border-border bg-transparent px-3 py-2 text-meta leading-none font-normal text-foreground shadow-none hover:bg-transparent hover:text-foreground focus-visible:ring-0 data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background';
+const filterTag =
+  'h-auto min-h-0 min-w-0 rounded-none border-0 bg-transparent p-0 px-0 py-0 text-sm font-normal text-muted-foreground no-underline shadow-none underline-offset-4 decoration-1 hover:border-0 hover:bg-transparent hover:text-muted-foreground hover:underline focus-visible:border-0 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-[3px] focus-visible:ring-offset-background data-[state=on]:border-0 data-[state=on]:bg-transparent data-[state=on]:text-foreground data-[state=on]:underline data-[state=on]:hover:border-0 data-[state=on]:hover:bg-transparent data-[state=on]:hover:text-foreground data-[state=on]:hover:underline aria-pressed:border-0 aria-pressed:bg-transparent aria-pressed:text-foreground aria-pressed:underline';
 
 type Props = {
   articles: readonly ArticleSummary[];
@@ -35,17 +35,17 @@ export function TagFilter({ articles }: Props) {
 
   return (
     <>
-      <section className="pt-14 pb-8">
-        <h1 className="mt-0 mb-0 text-label font-normal">記事</h1>
+      <section className="pt-4 pb-4">
+        <h1 className="mt-0 mb-0 text-sm font-normal">記事</h1>
         <div
-          className="mt-4 flex flex-wrap items-center gap-2 text-meta leading-none font-mono"
+          className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm"
           role="group"
           aria-label="タグで絞り込む"
         >
           <Toggle
             pressed={selected.length === 0}
             onPressedChange={() => setSelected((current) => (current.length === 0 ? current : []))}
-            className={pill}
+            className={filterTag}
           >
             すべて
           </Toggle>
@@ -53,14 +53,14 @@ export function TagFilter({ articles }: Props) {
             multiple
             value={selected}
             onValueChange={setSelected}
-            spacing={2}
-            className="w-fit flex-wrap gap-2"
+            spacing={3}
+            className="w-fit flex-wrap gap-x-3 gap-y-1"
           >
             {tags.map((tag) => (
               <ToggleGroupItem
                 key={tag}
                 value={tag}
-                className={pill}
+                className={filterTag}
               >
                 {`#${tag}`}
               </ToggleGroupItem>
@@ -68,17 +68,17 @@ export function TagFilter({ articles }: Props) {
           </ToggleGroup>
         </div>
       </section>
-      <RuleFigure kind="ruler" />
-      <section className="pt-4 pb-8">
+      <Rule kind="trace" seed={2} />
+      <section className="pt-4 pb-4">
         {visible.length === 0 ? (
           <p>該当する記事はありません。</p>
         ) : (
           visible.map((article) => (
-            <div key={article.url} className="py-2.5">
-              <a className="text-foreground link" href={article.url}>
+            <div key={article.url} className="py-1.5">
+              <a className="text-foreground link leading-5" href={article.url}>
                 {article.title}
               </a>
-              <div className="flex flex-wrap gap-3 text-meta">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
                 <time dateTime={article.iso}>{article.date}</time>
                 {article.tags.map((tag) => (
                   <TagLink key={tag} tag={tag} />

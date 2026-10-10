@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { filterArticlesByTags, formatArticleDate, neighborsOf } from '../src/lib/blog.ts';
 import type { ArticleSummary } from '../src/lib/types.ts';
-import { ruleGeometry } from '../src/lib/rule.ts';
 import { copyrightLine } from '../src/lib/site.ts';
 
 const articles: ArticleSummary[] = [
@@ -40,22 +39,6 @@ describe('copyrightLine', () => {
   it('uses the Tokyo calendar year', () => {
     assert.equal(copyrightLine(new Date('2025-12-31T15:00:00.000Z')), '© 2026 noisebakery.com');
     assert.equal(copyrightLine(new Date('2025-12-31T14:59:00.000Z')), '© 2025 noisebakery.com');
-  });
-});
-
-describe('ruleGeometry', () => {
-  it('keeps the trace seed 3 path and the dither seed 1 rects', () => {
-    const trace = ruleGeometry('trace');
-    assert.equal(
-      trace.d?.slice(0, 64),
-      'M0,3.3L3,4.7L6,3.4L9,4.4L12,3.4L15,5.1L18,3.4L21,3.3L24,4.5L27,4',
-    );
-
-    const dither = ruleGeometry('dither');
-    assert.equal(dither.rects.length, 430);
-    for (const rect of dither.rects) {
-      assert.equal(rect.fill, 'currentColor');
-    }
   });
 });
 

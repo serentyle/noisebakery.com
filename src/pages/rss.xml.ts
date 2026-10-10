@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
-import { getPublishedPosts, postPath } from '@/lib/blog';
+import { getPublishedArticles } from '@/lib/collections';
 import { siteDescription, siteName } from '@/lib/site';
 
 export async function GET(context: APIContext) {
@@ -8,16 +8,16 @@ export async function GET(context: APIContext) {
   if (site === undefined) {
     throw new Error('site is unset');
   }
-  const posts = await getPublishedPosts();
+  const articles = await getPublishedArticles();
   return rss({
     title: siteName,
     description: siteDescription,
     site,
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.pubDate,
-      link: postPath(post.id),
+    items: articles.map((article) => ({
+      title: article.data.title,
+      description: article.data.description,
+      pubDate: article.data.pubDate,
+      link: `/blog/${article.id}/`,
     })),
   });
 }

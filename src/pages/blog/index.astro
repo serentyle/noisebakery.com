@@ -1,21 +1,12 @@
 ---
 import { TagFilter } from '../../components/blog/TagFilter';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedPosts, postPath } from '../../lib/blog';
-import type { PostCard } from '../../lib/post-card';
+import { getPublishedArticles } from '../../lib/collections';
+import { toArticleSummary } from '../../lib/blog';
 
-const posts: PostCard[] = (await getPublishedPosts()).map((post) => ({
-  title: post.data.title,
-  url: postPath(post.id),
-  pubDate: post.data.pubDate.toISOString(),
-  description: post.data.description,
-  tags: post.data.tags,
-}));
+const articles = (await getPublishedArticles()).map((article) => toArticleSummary(article));
 ---
 
 <BaseLayout title="記事">
-  <div class="flex flex-col gap-6">
-    <h1 class="text-3xl font-medium">記事</h1>
-    <TagFilter client:only="react" posts={posts} />
-  </div>
+  <TagFilter client:load articles={articles} />
 </BaseLayout>

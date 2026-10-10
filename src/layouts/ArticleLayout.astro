@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import { TagLink } from '../components/blog/TagLink';
+import type { ArticleSummary, Neighbor, PublishedArticle } from '../lib/types';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  entry: PublishedArticle;
+  summary: ArticleSummary;
+  neighbors: Neighbor[];
+}
+
+const { entry, summary, neighbors } = Astro.props;
+const { title, description, heroImage } = entry.data;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="pt-4 pb-4">
+    <h1 class="m-0 text-xl font-bold tracking-[-0.01em] text-foreground">{title}</h1>
+    <div class="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
+      <time datetime={summary.iso}>{summary.date}</time>
+      {summary.tags.map((tag) => <TagLink tag={tag} />)}
+    </div>
+    {
+      heroImage && (
+        <Image
+          class="mt-4 block h-auto w-auto max-w-full"
+          src={heroImage}
+          alt={title}
+        />
+      )
+    }
+    <div
+      class="mt-6 [&_h2]:mt-8 [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-foreground [&_p]:mt-0 [&_p]:mb-3 [&_pre]:mb-3 [&_pre]:overflow-x-auto [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-[1.7]"
+    >
+      <slot />
+    </div>
+  </article>
+  {
+    neighbors.length > 0 && (
+      <nav class="pt-4 pb-4" aria-label="前後の記事">
+        {neighbors.map((neighbor) => (
+          <div class="py-1.5">
+            <a class="text-foreground link leading-5" href={neighbor.url}>
+              {neighbor.title}
+            </a>
+            <span class="block text-sm">{neighbor.label}</span>
+          </div>
+        ))}
+      </nav>
+    )
+  }
+</BaseLayout>

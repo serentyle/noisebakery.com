@@ -1,12 +1,12 @@
 ---
 import { TagFilter } from '../../components/blog/TagFilter';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { toPostSummary } from '../../lib/blog';
-import { getPublishedPosts } from '../../lib/posts';
+import { getPublishedArticles } from '../../lib/collections';
+import { toArticleSummary } from '../../lib/blog';
 
-const posts = (await getPublishedPosts()).map((post) => toPostSummary(post));
+const articles = (await getPublishedArticles()).map((article) => toArticleSummary(article));
 ---
 
 <BaseLayout title="記事">
-  <TagFilter client:load posts={posts} />
+  <TagFilter client:load articles={articles} />
 </BaseLayout>

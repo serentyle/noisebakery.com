@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { formatPostDate, neighborsOf, visiblePosts, type PostSummary } from '../src/lib/blog.ts';
+import { filterArticlesByTags, formatArticleDate, neighborsOf } from '../src/lib/blog.ts';
+import type { ArticleSummary } from '../src/lib/types.ts';
 import { ruleGeometry } from '../src/lib/rule.ts';
 import { copyrightLine } from '../src/lib/site.ts';
 
-const posts: PostSummary[] = [
+const articles: ArticleSummary[] = [
   {
     url: '/blog/a/',
     title: 'A',
@@ -28,10 +29,10 @@ const posts: PostSummary[] = [
   },
 ];
 
-describe('formatPostDate', () => {
+describe('formatArticleDate', () => {
   it('formats Tokyo calendar dates as YYYY.MM.DD', () => {
-    assert.equal(formatPostDate('2026-10-04T00:00:00.000Z'), '2026.10.04');
-    assert.equal(formatPostDate('2026-10-03T15:00:00.000Z'), '2026.10.04');
+    assert.equal(formatArticleDate('2026-10-04T00:00:00.000Z'), '2026.10.04');
+    assert.equal(formatArticleDate('2026-10-03T15:00:00.000Z'), '2026.10.04');
   });
 });
 
@@ -59,7 +60,7 @@ describe('ruleGeometry', () => {
 });
 
 describe('neighborsOf', () => {
-  const summaries: PostSummary[] = [
+  const summaries: ArticleSummary[] = [
     {
       url: '/blog/new/',
       title: '新しい',
@@ -83,7 +84,7 @@ describe('neighborsOf', () => {
     },
   ];
 
-  it('lists the older post first and omits a missing side', () => {
+  it('lists the older article first and omits a missing side', () => {
     assert.deepEqual(neighborsOf(summaries, 1), [
       { url: '/blog/old/', title: '古い', label: '前の記事' },
       { url: '/blog/new/', title: '新しい', label: '次の記事' },
@@ -97,20 +98,20 @@ describe('neighborsOf', () => {
   });
 });
 
-describe('visiblePosts', () => {
-  it('shows every post for an empty selection, ORs one or more tags, and drops an unknown tag', () => {
+describe('filterArticlesByTags', () => {
+  it('shows every article for an empty selection, ORs one or more tags, and drops an unknown tag', () => {
     assert.deepEqual(
-      visiblePosts(posts, []).map((post) => post.title),
+      filterArticlesByTags(articles, []).map((article) => article.title),
       ['A', 'B', 'C'],
     );
     assert.deepEqual(
-      visiblePosts(posts, ['日記']).map((post) => post.title),
+      filterArticlesByTags(articles, ['日記']).map((article) => article.title),
       ['A', 'C'],
     );
     assert.deepEqual(
-      visiblePosts(posts, ['サイト', '日記']).map((post) => post.title),
+      filterArticlesByTags(articles, ['サイト', '日記']).map((article) => article.title),
       ['A', 'B', 'C'],
     );
-    assert.deepEqual(visiblePosts(posts, ['unknown']), []);
+    assert.deepEqual(filterArticlesByTags(articles, ['unknown']), []);
   });
 });

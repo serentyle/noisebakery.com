@@ -1,11 +1,7 @@
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import {
-  parseTagQuery,
-  collectTags,
-  filterPostsByTags,
-  type PostSummary,
-} from '@/lib/blog';
+import { collectTags, filterArticlesByTags, parseTagQuery } from '@/lib/blog';
+import type { ArticleSummary } from '@/lib/types';
 import { useLayoutEffect, useState } from 'react';
 import { RuleFigure } from '../RuleFigure';
 import { TagLink } from './TagLink';
@@ -14,14 +10,14 @@ const pill =
   'h-auto min-h-0 min-w-0 rounded-full border border-border bg-transparent px-3 py-2 text-meta leading-none font-normal text-foreground shadow-none hover:bg-transparent hover:text-foreground focus-visible:ring-0 data-[state=on]:border-foreground data-[state=on]:bg-foreground data-[state=on]:text-background aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background';
 
 type Props = {
-  posts: readonly PostSummary[];
+  articles: readonly ArticleSummary[];
 };
 
 function sameTags(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((tag, index) => tag === b[index]);
 }
 
-export function TagFilter({ posts }: Props) {
+export function TagFilter({ articles }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
 
   useLayoutEffect(() => {
@@ -34,8 +30,8 @@ export function TagFilter({ posts }: Props) {
     return () => document.removeEventListener('astro:page-load', sync);
   }, []);
 
-  const tags = collectTags(posts);
-  const visible = filterPostsByTags(posts, selected);
+  const tags = collectTags(articles);
+  const visible = filterArticlesByTags(articles, selected);
 
   return (
     <>
@@ -77,14 +73,14 @@ export function TagFilter({ posts }: Props) {
         {visible.length === 0 ? (
           <p>該当する記事はありません。</p>
         ) : (
-          visible.map((post) => (
-            <div key={post.url} className="py-2.5">
-              <a className="text-foreground link" href={post.url}>
-                {post.title}
+          visible.map((article) => (
+            <div key={article.url} className="py-2.5">
+              <a className="text-foreground link" href={article.url}>
+                {article.title}
               </a>
               <div className="flex flex-wrap gap-3 text-meta">
-                <time dateTime={post.iso}>{post.date}</time>
-                {post.tags.map((tag) => (
+                <time dateTime={article.iso}>{article.date}</time>
+                {article.tags.map((tag) => (
                   <TagLink key={tag} tag={tag} />
                 ))}
               </div>

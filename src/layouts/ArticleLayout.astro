@@ -2,12 +2,12 @@
 import { Image } from 'astro:assets';
 import { TagLink } from '../components/blog/TagLink';
 import { RuleFigure } from '../components/RuleFigure';
+import type { ArticleSummary, Neighbor, PublishedArticle } from '../lib/types';
 import BaseLayout from './BaseLayout.astro';
-import type { Neighbor, PostSummary, PublishedPost } from '../lib/blog';
 
 interface Props {
-  entry: PublishedPost;
-  summary: PostSummary;
+  entry: PublishedArticle;
+  summary: ArticleSummary;
   neighbors: Neighbor[];
 }
 
